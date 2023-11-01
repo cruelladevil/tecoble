@@ -1,0 +1,67 @@
+name: Imporved Build Gatsby
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy Tecoble
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.4'
+          cache: yarn
+
+      - name: Install Dependencies
+        run: yarn install --immutable
+
+      - name: Cache Gatsby `.cache` Folder
+        uses: actions/cache@v3
+        id: gatsby-cache-folder
+        with:
+          path: .cache
+          key: ${{ runner.os }}-cache-gatsby
+          restore-keys: |
+            ${{ runner.os }}-cache-gatsby
+
+      - if: steps.gatsby-cache-folder.outputs.cache-hit == 'true'
+        run: echo 'gatsby-cache-folder cache hit!'
+
+      - name: Cache Gatsby `public` Folder
+        uses: actions/cache@v3
+        id: gatsby-public-folder
+        with:
+          path: public
+          key: ${{ runner.os }}-public-gatsby
+          restore-keys: |
+            ${{ runner.os }}-public-gatsby
+
+      - if: steps.gatsby-public-folder.outputs.cache-hit == 'true'
+        run: echo 'gatsby-public-folder cache hit!'
+
+      - name: Build Gatsby Project
+        run: |
+          yarn build
+        env:
+          # incremental builds
+          # https://www.gatsbyjs.org/docs/page-build-optimizations-for-incremental-data-changes/
+          GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES: true
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
