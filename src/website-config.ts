@@ -1,4 +1,4 @@
-export interface WebsiteConfig {
+export type WebsiteConfig = {
   title: string;
   description: string;
   coverImage?: string;
@@ -46,17 +46,18 @@ export interface WebsiteConfig {
    * Appears alongside the footer, after the credits
    */
   footer?: string;
-}
+};
 
 const config: WebsiteConfig = {
   title: 'Tecoble',
   description: 'woowacourse code review & devlog',
   coverImage: 'img/wooteco.jpeg',
   logo: 'img/tecoble.png',
-  lang: 'en',
-  siteUrl: 'https://tecoble.techcourse.co.kr/',
+  lang: 'ko',
+  siteUrl: 'https://tecoble.techcourse.co.kr',
   showSubscribe: false,
-  mailchimpAction: 'https://twitter.us19.list-manage.com/subscribe/post?u=a89b6987ac248c81b0b7f3a0f&amp;id=7d777b7d75',
+  mailchimpAction:
+    'https://twitter.us19.list-manage.com/subscribe/post?u=a89b6987ac248c81b0b7f3a0f&amp;id=7d777b7d75',
   mailchimpName: 'b_a89b6987ac248c81b0b7f3a0f_7d777b7d75',
   mailchimpEmailFieldName: 'MERGE0',
   googleSiteVerification: 'GoogleCode',
